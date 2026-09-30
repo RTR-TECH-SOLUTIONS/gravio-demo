@@ -1,0 +1,29 @@
+---
+// Dev tool: renders the catalog photos (product + sample engraving). Run `node scripts/render-catalog.mjs`.
+---
+<html lang="ro"><head><meta charset="utf-8" /><meta name="robots" content="noindex" /><title>Randare catalog</title></head>
+<body>
+<p id="status">se încarcă</p>
+<script>
+  import '@fontsource/great-vibes';
+  import '@fontsource/cormorant-garamond/500.css';
+  import '@fontsource/special-elite';
+  import '@fontsource-variable/josefin-sans';
+  import { PRODUCTS } from '../data/catalog';
+  import { ensureFonts, loadImage } from '../lib/engrave';
+  import { designFromSample, drawComposite, materialFor } from '../lib/render';
+
+  (window as any).renderAll = async () => {
+    await ensureFonts();
+    const out: Record<string, string> = {};
+    for (const p of PRODUCTS) {
+      const c = document.createElement('canvas');
+      c.width = c.height = 2048;
+      { const d = await designFromSample(p.sample); drawComposite(c, p, await loadImage(p.image), d, materialFor(p, d)); }
+      out[p.slug] = c.toDataURL('image/png');
+    }
+    return out;
+  };
+  document.getElementById('status')!.textContent = 'gata';
+</script>
+</body></html>

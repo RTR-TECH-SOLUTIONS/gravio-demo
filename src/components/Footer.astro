@@ -1,0 +1,92 @@
+---
+import { siApplepay, siGooglepay, siVisa } from 'simple-icons';
+import { CATEGORIES, OCCASIONS } from '../data/catalog';
+
+const cols = [
+  { title: 'Contul tău', links: [['Creează un cont', '#cont'], ['Conectează-te', '#cont'], ['Urmărește comanda', '#comanda']] },
+  { title: 'Produse populare', links: Object.entries(CATEGORIES).map(([id, c]) => [c.name, `/produse?cat=${id}`]) },
+  { title: 'Ocazii', links: Object.entries(OCCASIONS).slice(0, 7).map(([id, o]) => [o, `/produse?o=${id}`]) },
+  { title: 'Ajutor', links: [['Cum comand', '/#cum-functioneaza'], ['Livrare și termene', '#livrare'], ['Retur și reclamații', '#retur'], ['Întrebări frecvente', '#faq'], ['Comenzi pentru firme', '/produse?o=corporate']] },
+  { title: 'Mai mult', links: [['Despre atelier', '#atelier'], ['Blog', '#blog'], ['Contact', '#contact'], ['Termeni și condiții', '#termeni'], ['Confidențialitate', '#gdpr']] },
+];
+// brand marks for the accepted payment methods (Visa, Apple Pay, Google Pay from simple-icons)
+const marks = [
+  { label: 'Visa', path: siVisa.path, color: `#${siVisa.hex}`, scale: 0.9 },
+  { label: 'Apple Pay', path: siApplepay.path, color: '#000000', scale: 1.15 },
+  { label: 'Google Pay', path: siGooglepay.path, color: '#3c4043', scale: 1.15 },
+];
+---
+
+<footer id="contact" class="mt-14 bg-[#ececec] text-[13px] text-ink-2">
+  <div class="wrap grid grid-cols-2 gap-x-6 gap-y-9 py-12 sm:grid-cols-3 lg:grid-cols-6">
+    <div>
+      <h2 class="text-[15px] font-semibold text-ink">Social</h2>
+      <span class="mt-2 block h-[3px] w-7 bg-accent" aria-hidden="true"></span>
+      <div class="mt-4 flex gap-2">
+        <a href="#facebook" class="grid size-9 place-items-center rounded bg-accent text-white hover:bg-accent-dark" aria-label="Facebook">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H8v4h2v8h4v-8h3l1-4h-4V8Z" /></svg>
+        </a>
+        <a href="#instagram" class="grid size-9 place-items-center rounded bg-accent text-white hover:bg-accent-dark" aria-label="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" /><circle cx="12" cy="12" r="3.5" /><circle cx="17" cy="7" r="0.6" fill="currentColor" /></svg>
+        </a>
+        <a href="https://wa.me/40740123456" class="grid size-9 place-items-center rounded bg-accent text-white hover:bg-accent-dark" aria-label="WhatsApp">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19l-4 1Z" /></svg>
+        </a>
+      </div>
+      <p class="mt-5 leading-relaxed">
+        <a class="font-bold text-ink hover:underline" href="tel:+40740123456">0740 123 456</a><br />L-V 9-18<br />
+        <a class="hover:underline" href="mailto:comenzi@gravio.ro">comenzi@gravio.ro</a>
+      </p>
+    </div>
+    {cols.map((c) => (
+      <div>
+        <h2 class="text-[15px] font-semibold text-ink">{c.title}</h2>
+        <span class="mt-2 block h-[3px] w-7 bg-accent" aria-hidden="true"></span>
+        <ul class="mt-4 space-y-1.5">
+          {c.links.map(([label, href]) => <li><a class="hover:text-accent" href={href}>{label}</a></li>)}
+        </ul>
+      </div>
+    ))}
+  </div>
+  <div class="border-t border-[#dcdcdc] bg-white">
+    <div class="wrap flex flex-col items-center gap-4 py-7 text-center">
+      <ul class="flex flex-wrap justify-center gap-2" aria-label="Metode de plată">
+        <li class="pay" title="Visa"><svg viewBox="0 0 24 24" role="img" aria-label="Visa" class="h-9 w-12"><path d={marks[0].path} fill={marks[0].color} /></svg></li>
+        <li class="pay" title="Mastercard">
+          <svg viewBox="0 0 40 24" role="img" aria-label="Mastercard" class="h-6 w-10">
+            <circle cx="15" cy="12" r="9" fill="#EB001B" /><circle cx="25" cy="12" r="9" fill="#F79E1B" />
+            <path d="M20 4.5a9 9 0 0 1 0 15 9 9 0 0 1 0-15Z" fill="#FF5F00" />
+          </svg>
+        </li>
+        <li class="pay" title="Maestro">
+          <svg viewBox="0 0 40 24" role="img" aria-label="Maestro" class="h-6 w-10">
+            <circle cx="15" cy="12" r="9" fill="#EB001B" /><circle cx="25" cy="12" r="9" fill="#00A2E5" />
+            <path d="M20 4.5a9 9 0 0 1 0 15 9 9 0 0 1 0-15Z" fill="#7375CF" />
+          </svg>
+        </li>
+        {marks.slice(1).map((m) => (
+          <li class="pay" title={m.label}><svg viewBox="0 0 24 24" role="img" aria-label={m.label} class="h-7 w-11"><path d={m.path} fill={m.color} /></svg></li>
+        ))}
+        <li class="pay gap-1.5 px-2.5 text-[11px] font-extrabold text-ink" title="Plata la livrare">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2" /><circle cx="12" cy="12" r="2.5" /><path d="M6 9v.01M18 15v.01" /></svg>
+          Ramburs
+        </li>
+      </ul>
+      <p class="text-[12px]">© 2016-2026 Gravio · Atelier de gravură laser · comenzi@gravio.ro</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .pay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 58px;
+    height: 38px;
+    padding: 0 8px;
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
+    background: #fff;
+  }
+</style>

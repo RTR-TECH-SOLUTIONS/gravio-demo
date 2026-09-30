@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ProductsBrowser from '../components/ProductsBrowser.tsx';
+---
+
+<Layout title="Toate produsele">
+  <div class="wrap pt-4">
+    <nav aria-label="Navigare" class="mb-4 text-sm text-muted">
+      <a href="/" class="hover:text-ink">Acasă</a> <span aria-hidden="true">/</span> <span class="text-ink">Produse</span>
+    </nav>
+    <ProductsBrowser client:load />
+  </div>
+</Layout>

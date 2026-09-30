@@ -1,0 +1,15 @@
+---
+interface Props {
+  light?: boolean;
+}
+const { light = false } = Astro.props;
+---
+
+<span class:list={['inline-flex items-center gap-2', light ? 'text-white' : 'text-ink']}>
+  <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+    <rect width="32" height="32" rx="7" fill={light ? '#fff' : '#1d1c1a'}></rect>
+    <path d="M21.5 11.2A7 7 0 1 0 23 17h-6.5" fill="none" stroke={light ? '#1d1c1a' : '#fff'} stroke-width="3" stroke-linecap="round"></path>
+    <circle cx="23" cy="17" r="2.2" fill="#e0662f"></circle>
+  </svg>
+  <span class="text-[1.45rem] font-extrabold leading-none tracking-[-0.03em]">gravio</span>
+</span>
