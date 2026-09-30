@@ -10,7 +10,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "build:pages": "GH_PAGES=1 astro build && node scripts/prefix-base.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^7.0.0",
