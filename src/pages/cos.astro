@@ -1,0 +1,10 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Checkout from '../components/Checkout.tsx';
+---
+
+<Layout title="Coșul tău">
+  <div class="wrap pt-6">
+    <Checkout client:load />
+  </div>
+</Layout>

@@ -1,0 +1,112 @@
+---
+import CartButton from './CartButton.tsx';
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { CATEGORIES, OCCASIONS, PRODUCTS, catalogImage } from '../data/catalog';
+
+const nav = [
+  { href: '/produse?f=reduceri', label: 'Reduceri', icon: 'tag', tone: 'text-accent' },
+  { href: '/produse?f=noi', label: 'Noutăți', icon: 'spark', tone: 'text-sun' },
+  { href: '/produse?f=bestseller', label: 'Best Sellers', icon: 'star', tone: 'text-sun' },
+  { href: '/produse?o=aniversare', label: 'Zi de naștere', icon: 'cake', tone: 'text-teal-dark' },
+  { href: '/produse?o=nunta', label: 'Nuntă și nași', icon: 'rings', tone: 'text-sun' },
+  { href: '/produse?o=pentru-el', label: 'Pentru el', icon: 'he', tone: 'text-teal-dark' },
+  { href: '/produse?o=pentru-ea', label: 'Pentru ea', icon: 'she', tone: 'text-accent' },
+  { href: '/produse?o=corporate', label: 'Corporate', icon: 'case', tone: 'text-ink-2' },
+] as const;
+const featured = PRODUCTS[0];
+---
+
+<div class="bg-teal text-white">
+  <p class="wrap py-2 text-center text-[12px] font-extrabold uppercase tracking-wide sm:text-[13px]">
+    Livrare gratuită peste 250 lei<span class="hidden sm:inline"> · Previzualizezi gravura înainte să comanzi</span>
+  </p>
+</div>
+
+<header class="bg-white shadow-[0_1px_0_#e6e8ea]">
+  <div class="wrap flex h-[68px] items-center gap-3">
+    <details class="group lg:hidden" id="mnav">
+      <summary class="grid size-11 cursor-pointer list-none place-items-center rounded-md hover:bg-surface [&::-webkit-details-marker]:hidden" aria-label="Meniu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+      </summary>
+      <div class="fixed inset-x-0 bottom-0 top-[102px] z-40 overflow-y-auto border-t border-line bg-white px-4 pb-10 pt-4">
+        <ul class="divide-y divide-line border-y border-line">
+          {nav.map((n) => (
+            <li><a class="flex items-center gap-3 py-3 font-semibold text-ink" href={n.href}><Icon name={n.icon} class={n.tone} />{n.label}</a></li>
+          ))}
+        </ul>
+        <p class="mb-2 mt-6 text-sm font-bold text-muted">Produse</p>
+        <ul class="grid grid-cols-2 gap-2">
+          {Object.entries(CATEGORIES).map(([id, c]) => (
+            <li><a class="block rounded-md bg-surface px-3 py-3 font-semibold text-ink" href={`/produse?cat=${id}`}>{c.name}</a></li>
+          ))}
+        </ul>
+      </div>
+    </details>
+
+    <a href="/" class="shrink-0" aria-label="Gravio, prima pagină"><Logo /></a>
+
+    <nav class="ml-auto hidden items-center gap-6 text-[13px] font-semibold text-ink-2 lg:flex" aria-label="Utile">
+      <a href="#atelier" class="flex items-center gap-1.5 hover:text-ink"><Icon name="pin" size={16} />Atelier</a>
+      <a href="#blog" class="flex items-center gap-1.5 hover:text-ink"><Icon name="book" size={16} />Blog</a>
+      <a href="#contact" class="flex items-center gap-1.5 hover:text-ink"><Icon name="mail" size={16} />Contact</a>
+      <a href="#cont" class="flex items-center gap-1.5 hover:text-ink"><Icon name="user" size={16} />Autentificare</a>
+    </nav>
+
+    <div class="ml-auto flex items-center gap-1 lg:hidden">
+      <a href="/produse" class="grid size-11 place-items-center rounded-md hover:bg-surface" aria-label="Caută produse"><Icon name="search" size={21} /></a>
+    </div>
+    <div class="lg:hidden"><CartButton client:media="(max-width: 1023px)" /></div>
+  </div>
+
+  <div class="hidden border-t border-line lg:block">
+    <div class="wrap flex h-[52px] items-center gap-1">
+      <nav class="flex items-center text-[13.5px] font-semibold text-ink" aria-label="Categorii">
+        <div class="group relative">
+          <a href="/produse" class="flex h-[52px] items-center gap-1.5 pr-3">
+            <Icon name="gift" class="text-accent" />Toate produsele
+          </a>
+          <div class="invisible absolute left-0 top-full z-40 w-[760px] translate-y-1 rounded-b-lg border border-line bg-white p-6 opacity-0 shadow-[0_12px_32px_rgba(0,0,0,.10)] transition duration-150 ease-out group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+            <div class="grid grid-cols-[1fr_1fr_220px] gap-8">
+              <div>
+                <p class="mb-2 text-sm font-bold text-muted">După produs</p>
+                <ul class="space-y-1.5">
+                  {Object.entries(CATEGORIES).map(([id, c]) => <li><a class="hover:text-accent" href={`/produse?cat=${id}`}>{c.name}</a></li>)}
+                </ul>
+              </div>
+              <div>
+                <p class="mb-2 text-sm font-bold text-muted">După ocazie</p>
+                <ul class="space-y-1.5">
+                  {Object.entries(OCCASIONS).map(([id, o]) => <li><a class="hover:text-accent" href={`/produse?o=${id}`}>{o}</a></li>)}
+                </ul>
+              </div>
+              <a href={`/produs/${featured.slug}`} class="block rounded-md bg-surface p-3 hover:bg-[#eceeef]">
+                <img src={catalogImage(featured)} alt="" width="200" height="200" class="aspect-square w-full rounded bg-photo object-cover" loading="lazy" />
+                <p class="mt-2 text-sm font-bold leading-snug">{featured.name}</p>
+                <p class="text-sm text-accent">de la {featured.price} lei</p>
+              </a>
+            </div>
+          </div>
+        </div>
+        {nav.map((n) => (
+          <a href={n.href} class="flex items-center gap-1.5 rounded-md px-2.5 py-2 hover:bg-surface xl:px-3">
+            <Icon name={n.icon} class={n.tone} />{n.label}
+          </a>
+        ))}
+      </nav>
+      <div class="ml-auto flex items-center gap-1">
+        <details class="relative">
+          <summary class="grid size-11 cursor-pointer list-none place-items-center rounded-md hover:bg-surface [&::-webkit-details-marker]:hidden" aria-label="Caută"><Icon name="search" size={19} /></summary>
+          <form action="/produse" method="get" role="search" class="absolute right-0 top-full z-40 mt-1 w-[380px] rounded-lg border border-line bg-white p-3 shadow-[0_12px_32px_rgba(0,0,0,.10)]">
+            <label class="flex h-11 items-center rounded-md border border-[#d6d9dc] pl-3 focus-within:border-teal-dark">
+              <span class="sr-only">Caută</span>
+              <input name="q" type="search" placeholder="Caută: cană, tocător, brichetă..." class="w-full bg-transparent text-[0.95rem] text-ink outline-none placeholder:text-muted" />
+              <button class="grid size-11 shrink-0 place-items-center text-ink" aria-label="Caută"><Icon name="search" size={18} /></button>
+            </label>
+          </form>
+        </details>
+        <CartButton client:media="(min-width: 1024px)" />
+      </div>
+    </div>
+  </div>
+</header>

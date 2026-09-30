@@ -1,0 +1,258 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import HomeTry from '../components/HomeTry.tsx';
+import { PRODUCTS, bySlug } from '../data/catalog';
+
+const shot = (slug: string) => `/img/products/${slug}.jpg`;
+
+const slides = [
+  { img: '/img/banners/hero-cristal.jpg', pre: 'Poza lui, în cristal,', hi: 'gravată cu laser', cta: 'Personalizează', href: '/produs/cristal-3d-portret', panel: 'bg-teal', pos: 'object-[100%_50%]' },
+  { img: '/img/banners/nunta-flute.jpg', pre: 'Pahare gravate pentru', hi: 'nuntă și nași', cta: 'Descoperă', href: '/produse?o=nunta', panel: 'bg-accent', pos: 'object-[100%_50%]' },
+  { img: '/img/banners/atelier-cristal.jpg', pre: 'Vezi gravura', hi: 'înainte să comanzi', cta: 'Vezi produsele', href: '/produse', panel: 'bg-ink', pos: 'object-[100%_50%]' },
+];
+
+const best = PRODUCTS.filter((p) => p.bestseller);
+const wedding = PRODUCTS.filter((p) => p.occasions.includes('nunta'));
+
+const squares = [
+  [
+    { label: 'Cristale 3D portret', slug: 'cristal-3d-portret', href: '/produse?cat=cristale' },
+    { label: 'Cristale pentru cupluri', slug: 'cristal-3d-peisaj', href: '/produse?cat=cristale' },
+  ],
+  [
+    { label: 'Pahare de șampanie', slug: 'pahar-sampanie-gravat', href: '/produse?cat=pahare' },
+    { label: 'Pahare de vin', slug: 'pahar-vin-gravat', href: '/produse?cat=pahare' },
+  ],
+  [
+    { label: 'Căni de sticlă cu poză', slug: 'cana-sticla-gravata-cu-poza', href: '/produse?cat=cani' },
+    { label: 'Halbe de bere', slug: 'halba-bere-gravata', href: '/produse?cat=cani' },
+  ],
+];
+
+const forWho = [
+  { hi: 'pentru ea', href: '/produse?o=pentru-ea', color: 'bg-sun', a: 'cristal-3d-baza-led', b: 'pahar-vin-gravat' },
+  { hi: 'pentru el', href: '/produse?o=pentru-el', color: 'bg-teal', a: 'pahar-whisky-gravat', b: 'halba-bere-gravata' },
+  { hi: 'pentru părinți', href: '/produse?o=parinti', color: 'bg-teal', a: 'cristal-3d-portret', b: 'cana-sticla-gravata-cu-poza' },
+  { hi: 'pentru miri și nași', href: '/produse?o=nunta', color: 'bg-sun', a: 'set-2-pahare-sampanie-miri', b: 'cristal-3d-peisaj' },
+];
+
+const corporate = [
+  { title: 'Cristale cu logo', text: 'Premii și plachete pentru angajați, gravate în interior.', slug: 'cub-cristal-3d' },
+  { title: 'Pahare de whisky', text: 'Cadou de protocol pentru parteneri, în cutie.', slug: 'pahar-whisky-gravat' },
+  { title: 'Halbe cu logo', text: 'Pentru evenimente și team building. De la 10 bucăți.', slug: 'halba-bere-gravata' },
+  { title: 'Flute pentru evenimente', text: 'Cu numele evenimentului și data, pentru toasturi.', slug: 'pahar-sampanie-gravat' },
+];
+
+const recent = [
+  ['cristal-3d-portret', 'acum 6 minute, Cluj-Napoca'],
+  ['set-2-pahare-sampanie-miri', 'acum 14 minute, București'],
+  ['cana-sticla-gravata-cu-poza', 'acum 22 de minute, Iași'],
+  ['cristal-3d-baza-led', 'acum 31 de minute, Brașov'],
+  ['pahar-whisky-gravat', 'acum 40 de minute, Timișoara'],
+  ['halba-bere-gravata', 'acum o oră, Constanța'],
+  ['cub-cristal-3d', 'acum o oră, Bacău'],
+] as const;
+---
+
+<Layout>
+  <div class="bg-white pb-10 pt-5">
+    <!-- hero slider: a little wider than the content column -->
+    <section class="mx-auto w-full max-w-[1340px] px-4" aria-roledescription="carusel" aria-label="Oferte">
+      <div class="relative overflow-hidden rounded-lg" data-slider>
+        <div class="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" data-track>
+          {slides.map((s, i) => (
+            <div class="relative w-full shrink-0 snap-start" aria-roledescription="slide" aria-label={`${i + 1} din ${slides.length}`}>
+              <img src={s.img} alt="" width="1800" height="1013" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} class:list={['aspect-[4/3] w-full object-cover sm:aspect-[16/7.2]', s.pos]} />
+              <div class:list={['p-6 text-center sm:absolute sm:left-16 sm:top-1/2 sm:w-[min(470px,44%)] sm:-translate-y-1/2 sm:rounded-[28px] sm:px-8 sm:py-10 lg:left-20', s.panel]}>
+                <h2 class="text-[clamp(1.4rem,0.9rem+1.6vw,2.15rem)] font-extrabold uppercase leading-[1.1] text-white!">
+                  {s.pre}<span class="block text-sun">{s.hi}</span>
+                </h2>
+                <a href={s.href} class="btn mt-6 bg-white px-8 text-[1.05rem] font-extrabold text-accent hover:bg-accent-soft">{s.cta}</a>
+              </div>
+            </div>
+          ))}
+        </div>
+        <button type="button" data-prev class="absolute left-4 top-1/2 hidden size-11 -translate-y-1/2 place-items-center rounded-full bg-white/85 text-accent shadow sm:grid" aria-label="Slide-ul anterior">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m15 5-7 7 7 7" /></svg>
+        </button>
+        <button type="button" data-next class="absolute right-4 top-1/2 hidden size-11 -translate-y-1/2 place-items-center rounded-full bg-white/85 text-accent shadow sm:grid" aria-label="Slide-ul următor">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg>
+        </button>
+        <div class="absolute bottom-5 left-1/2 hidden -translate-x-1/2 gap-2 sm:flex" data-dots>
+          {slides.map((_, i) => <button type="button" class="size-2.5 rounded-full bg-white/70 aria-[current=true]:bg-teal" aria-label={`Mergi la slide-ul ${i + 1}`} aria-current={i === 0 ? 'true' : 'false'} />)}
+        </div>
+      </div>
+    </section>
+
+    <!-- bestsellers -->
+    <section class="wrap mt-8">
+      <h2 class="section-title mb-3">Cele mai vândute cadouri gravate</h2>
+      <div class="rail">
+        {best.map((p, i) => <ProductCard product={p} eager={i < 2} />)}
+      </div>
+      <a href="/produse?f=bestseller" class="btn btn-accent btn-sm mt-3">Vezi toate produsele</a>
+    </section>
+
+    <!-- wide banner -->
+    <section class="wrap mt-8">
+      <a href="/produs/halba-bere-gravata" class="group relative block overflow-hidden rounded-lg">
+        <img src="/img/banners/halba.jpg" alt="Halbă de bere gravată cu „La mulți ani, Radu!”, pe tejgheaua unui bar" width="1800" height="1013" loading="lazy" class="aspect-[4/3] w-full object-cover object-[98%_50%] transition-transform duration-500 ease-out group-hover:scale-[1.02] sm:aspect-[16/5.6] sm:object-[70%_50%]" />
+        <div class="absolute bottom-5 left-5 max-w-[300px] rounded-2xl bg-white px-6 pb-5 pt-7 shadow-[0_8px_30px_rgba(0,0,0,.12)] sm:bottom-auto sm:left-10 sm:top-1/2 sm:-translate-y-1/2">
+          <span class="absolute -top-3 left-6 rounded bg-teal px-2.5 py-1 text-[11px] font-extrabold uppercase text-white">Nou</span>
+          <h3 class="text-xl font-semibold">Halbe de bere gravate</h3>
+          <span class="btn btn-accent btn-sm mt-4">Descoperă</span>
+        </div>
+      </a>
+    </section>
+
+    <!-- wedding rail -->
+    <section class="wrap mt-8">
+      <h2 class="section-title mb-3">Cadouri gravate pentru nuntă și nași</h2>
+      <div class="rail">
+        {wedding.map((p) => <ProductCard product={p} />)}
+      </div>
+      <a href="/produse?o=nunta" class="btn btn-accent btn-sm mt-3">Vezi toate produsele</a>
+    </section>
+  </div>
+
+  <!-- two-up tiles -->
+  <section class="wrap mt-6 grid gap-4 md:grid-cols-2">
+    <a href="/produse?cat=cristale" class="group grid grid-cols-2 items-center overflow-hidden rounded-lg bg-white">
+      <div class="p-5 sm:p-7">
+        <h3 class="text-[clamp(1.2rem,1rem+0.8vw,1.6rem)] font-semibold leading-tight">Cristale 3D cu poza ta</h3>
+        <span class="btn btn-accent btn-sm mt-5">Descoperă</span>
+      </div>
+      <img src="/img/banners/hero-cristal.jpg" alt="" width="900" height="900" loading="lazy" class="aspect-square size-full object-cover object-[100%_50%] transition-transform duration-500 group-hover:scale-[1.03]" />
+    </a>
+    <a href="/produse?cat=pahare" class="group grid grid-cols-2 items-center overflow-hidden rounded-lg bg-white">
+      <img src="/img/banners/nunta-flute.jpg" alt="" width="900" height="900" loading="lazy" class="aspect-square size-full object-cover object-[90%_50%] transition-transform duration-500 group-hover:scale-[1.03]" />
+      <div class="p-5 text-right sm:p-7">
+        <h3 class="text-[clamp(1.2rem,1rem+0.8vw,1.6rem)] font-semibold leading-tight">Pahare gravate pentru toasturi</h3>
+        <span class="btn btn-accent btn-sm mt-5">Descoperă</span>
+      </div>
+    </a>
+  </section>
+
+  <!-- birthday banner -->
+  <section class="wrap mt-4">
+    <a href="/produse?o=corporate" class="group relative block overflow-hidden rounded-lg">
+      <img src="/img/banners/corporate-cristal.jpg" alt="Trei cristale gravate cu o stea și textul „Mulțumim, 10 ani”" width="1800" height="1013" loading="lazy" class="aspect-[4/3] w-full object-cover object-[98%_50%] transition-transform duration-500 ease-out group-hover:scale-[1.02] sm:aspect-[16/5.6] sm:object-[70%_50%]" />
+      <div class="absolute bottom-5 left-5 rounded-2xl bg-white px-6 py-6 shadow-[0_8px_30px_rgba(0,0,0,.12)] sm:bottom-auto sm:left-10 sm:top-1/2 sm:-translate-y-1/2">
+        <p class="text-sm text-ink-2">Premii și cadouri</p>
+        <h3 class="text-2xl font-extrabold uppercase">pentru firme</h3>
+        <span class="btn btn-accent btn-sm mt-4">Descoperă</span>
+      </div>
+    </a>
+  </section>
+
+  <!-- colour squares -->
+  <section class="wrap mt-4 space-y-4" aria-label="Categorii">
+    {squares.map(([left, right], r) => {
+      const tones = r % 2 ? ['bg-sun', 'bg-teal'] : ['bg-teal', 'bg-sun'];
+      return (
+        <div class="grid grid-cols-2 gap-4 rounded-lg bg-white p-4 lg:grid-cols-4 lg:items-center">
+          <a href={left.href} class="hidden px-3 lg:block">
+            <h3 class="text-[1.4rem] font-semibold leading-tight">{left.label}</h3>
+            <span class="btn btn-accent btn-sm mt-4">Descoperă</span>
+          </a>
+          {[left, right].map((sq, i) => (
+            <a href={sq.href} class="group block">
+              <div class:list={['relative aspect-square overflow-hidden rounded-md', tones[i]]}>
+                <img src={shot(sq.slug)} alt={sq.label} width="400" height="400" loading="lazy" class="absolute inset-[11%] size-[78%] rounded-md object-cover shadow-[0_14px_24px_-10px_rgba(0,0,0,.45)] transition-transform duration-300 ease-out group-hover:scale-[1.04]" />
+              </div>
+              <p class="mt-2 text-center text-sm font-bold text-ink lg:hidden">{sq.label}</p>
+            </a>
+          ))}
+          <a href={right.href} class="hidden px-3 text-right lg:block">
+            <h3 class="text-[1.4rem] font-semibold leading-tight">{right.label}</h3>
+            <span class="btn btn-accent btn-sm mt-4">Descoperă</span>
+          </a>
+        </div>
+      );
+    })}
+  </section>
+
+  <!-- live try -->
+  <section class="wrap mt-4" id="cum-functioneaza">
+    <HomeTry client:visible product={PRODUCTS[0]} />
+  </section>
+
+  <!-- for whom -->
+  <section class="wrap mt-4 space-y-4">
+    {forWho.map((f, i) => (
+      <a href={f.href} class="group grid overflow-hidden rounded-lg bg-white sm:grid-cols-2 sm:items-center">
+        <div class:list={['p-6 sm:p-10', i % 2 === 1 && 'sm:order-2 sm:text-right']}>
+          <h3 class="text-[clamp(1.3rem,1rem+1vw,1.8rem)] font-semibold leading-tight">Cadouri gravate<br />{f.hi}</h3>
+          <span class:list={['mt-3 block h-[5px] w-6 bg-sun', i % 2 === 1 && 'sm:ml-auto']} aria-hidden="true"></span>
+          <span class="btn btn-accent btn-sm mt-6">Descoperă</span>
+        </div>
+        <div class:list={['relative mx-5 mb-5 h-[240px] rounded-md sm:m-0 sm:h-[300px] sm:rounded-none', f.color]}>
+          <div class="absolute inset-0 flex items-center justify-center gap-[5%] px-[6%]">
+            <img src={shot(f.a)} alt="" width="500" height="500" loading="lazy" class="aspect-square h-[76%] w-auto rounded-md object-cover shadow-[0_16px_26px_-12px_rgba(0,0,0,.5)] transition-transform duration-300 group-hover:-translate-y-1" />
+            <img src={shot(f.b)} alt="" width="400" height="400" loading="lazy" class="aspect-square h-[56%] w-auto self-end rounded-md object-cover shadow-[0_16px_26px_-12px_rgba(0,0,0,.5)] transition-transform duration-300 mb-[12%] group-hover:-translate-y-2" />
+          </div>
+        </div>
+      </a>
+    ))}
+  </section>
+
+  <!-- corporate -->
+  <section class="wrap mt-12">
+    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" class="mx-auto text-ink" aria-hidden="true"><path d="M3 8h18v11H3zM8 8V5h8v3M3 13h18" /></svg>
+    <h2 class="title-duo mt-2">Cadouri gravate<span>pentru firme</span></h2>
+    <div class="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      {corporate.map((c, i) => (
+        <a href="/produse?o=corporate" class="group overflow-hidden rounded-lg bg-white pb-4 text-center">
+          <div class:list={['relative aspect-[4/3]', i % 2 ? 'bg-sun' : 'bg-teal']}>
+            <img src={shot(c.slug)} alt="" width="300" height="300" loading="lazy" class="absolute left-1/2 top-[10%] aspect-square h-[80%] -translate-x-1/2 rounded-md object-cover shadow-[0_14px_22px_-10px_rgba(0,0,0,.45)] transition-transform duration-300 group-hover:scale-[1.04]" />
+          </div>
+          <h3 class="mt-3 px-3 text-[15px] font-bold">{c.title}</h3>
+          <p class="mt-1 px-3 text-[13px] leading-snug text-ink-2">{c.text}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- about -->
+  <section class="wrap mt-12">
+    <div class="rounded-lg bg-white p-6 sm:p-8">
+      <h2 class="section-title">Cristale 3D și pahare gravate cu poză</h2>
+      <p class="mt-3 font-semibold text-ink">
+        Gravăm cu laser în cristal și pe sticlă. Încarci poza, vezi gravura pe produs și comanzi. Înainte să pornim laserul îți trimitem macheta pe WhatsApp.
+      </p>
+      <p class="mt-3 max-w-[90ch] text-[14px] leading-relaxed">
+        La cristalele 3D, laserul nu atinge suprafața: desenează poza în interiorul sticlei, din sute de mii de puncte fine, așa că nu se zgârie și nu se șterge niciodată. Fundalul pozei îl decupăm noi, gratuit, ca să rămână doar persoana. Pe pahare și căni, gravura e albă și mată, direct în sticlă: nu e autocolant și nu se duce la spălat. Majoritatea comenzilor pleacă în 1-3 zile lucrătoare.
+      </p>
+    </div>
+  </section>
+
+  <!-- also bought -->
+  <section class="wrap mt-12">
+    <h2 class="mb-4 text-center text-[1.6rem] font-semibold">Ce se mai cumpără</h2>
+    <div class="rail">
+      {recent.map(([slug, note]) => <ProductCard product={bySlug(slug)!} note={note} />)}
+    </div>
+  </section>
+</Layout>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-slider]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('[data-track]')!;
+    const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-dots] button')];
+    const n = dots.length;
+    const current = () => Math.round(track.scrollLeft / track.clientWidth);
+    const go = (i: number) => track.scrollTo({ left: ((i + n) % n) * track.clientWidth, behavior: 'smooth' });
+    root.querySelector('[data-prev]')?.addEventListener('click', () => go(current() - 1));
+    root.querySelector('[data-next]')?.addEventListener('click', () => go(current() + 1));
+    dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
+    track.addEventListener('scroll', () => dots.forEach((d, i) => d.setAttribute('aria-current', String(i === current()))), { passive: true });
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let paused = false;
+      root.addEventListener('pointerenter', () => (paused = true));
+      root.addEventListener('pointerleave', () => (paused = false));
+      root.addEventListener('focusin', () => (paused = true));
+      setInterval(() => !paused && !document.hidden && go(current() + 1), 6500);
+    }
+  });
+</script>

@@ -1,0 +1,117 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Personalizer from '../../components/Personalizer.tsx';
+import ProductCard from '../../components/ProductCard.astro';
+import { CATEGORIES, MATERIAL_NAMES, PRODUCTS, type Product } from '../../data/catalog';
+
+export function getStaticPaths() {
+  return PRODUCTS.map((product) => ({ params: { slug: product.slug }, props: { product } }));
+}
+
+const { product } = Astro.props as { product: Product };
+const cat = CATEGORIES[product.category];
+const lifestyle: Record<string, string> = {
+  cristale: '/img/banners/hero-cristal.jpg',
+  pahare: '/img/banners/nunta-flute.jpg',
+  cani: '/img/banners/halba.jpg',
+};
+const gallery = [product.image, lifestyle[product.category], '/img/banners/atelier-cristal.jpg'];
+const related = PRODUCTS.filter((p) => p.slug !== product.slug)
+  .sort((a, b) => Number(b.category === product.category) - Number(a.category === product.category))
+  .slice(0, 5);
+
+const steps = [
+  'Încarci fotografia și scrii textul. Previzualizarea arată gravura pe produs pe loc.',
+  'Plasezi comanda. În aceeași zi lucrătoare îți trimitem macheta pe WhatsApp sau pe e-mail.',
+  'Confirmi macheta sau ceri modificări. Pornim laserul doar după ce spui „da”.',
+  `Gravăm în ${product.leadDays} și trimitem cu curierul. Primești numărul de urmărire prin SMS.`,
+];
+
+const reviews = [
+  { name: 'Alexandra P.', city: 'Brașov', stars: 5, date: '24 septembrie 2026', text: 'A ieșit exact ca în previzualizare. Am primit macheta pe WhatsApp în aceeași zi și am cerut textul mai jos cu un centimetru, fără nicio problemă.' },
+  { name: 'Radu M.', city: 'București', stars: 5, date: '19 septembrie 2026', text: 'Cadou pentru tata, a fost foarte emoționat. Gravura e fină și se simte la atingere, nu e un autocolant.' },
+  { name: 'Cristina D.', city: 'Timișoara', stars: 5, date: '11 septembrie 2026', text: 'Comandat luni, livrat joi. Ambalajul cadou arată îngrijit, am dat-o direct așa.' },
+  { name: 'Vlad I.', city: 'Constanța', stars: 4, date: '2 septembrie 2026', text: 'Foarte mulțumit de calitate. Poza mea era cam întunecată și m-au sunat să o luminăm puțin înainte de gravare, bine că au întrebat.' },
+];
+---
+
+<Layout title={product.name} description={product.short}>
+  <div class="bg-white pb-10">
+  <div class="wrap pt-4">
+    <nav aria-label="Navigare" class="mb-4 text-sm text-muted">
+      <ol class="flex flex-wrap items-center gap-1.5">
+        <li><a href="/" class="hover:text-ink">Acasă</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href={`/produse?cat=${product.category}`} class="hover:text-ink">{cat.name}</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="truncate text-ink" aria-current="page">{product.name}</li>
+      </ol>
+    </nav>
+
+    <Personalizer client:load product={product} gallery={gallery} />
+  </div>
+  </div>
+  <div class="wrap">
+
+    <div class="mt-8 grid gap-10 rounded-lg bg-white p-6 sm:p-8 lg:grid-cols-12">
+      <section class="lg:col-span-7" aria-labelledby="descriere">
+        <h2 id="descriere" class="section-title">Descriere</h2>
+        <p class="mt-3 max-w-[65ch] leading-relaxed text-ink-2">{product.short}</p>
+        <ul class="mt-4 grid gap-2 sm:grid-cols-2">
+          {product.details.map((d) => (
+            <li class="flex gap-2.5 text-[0.95rem]">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="mt-1 shrink-0 text-ok" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg>
+              {d}
+            </li>
+          ))}
+        </ul>
+
+        <h2 class="section-title mt-10">Cum comanzi</h2>
+        <ol class="mt-4 space-y-3">
+          {steps.map((s, i) => (
+            <li class="flex gap-4">
+              <span class="grid size-8 shrink-0 place-items-center rounded-full border border-ink text-sm font-bold">{i + 1}</span>
+              <p class="pt-1 leading-relaxed text-ink-2">{s}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <aside class="lg:col-span-5">
+        <dl class="divide-y divide-line rounded-[10px] border border-line text-sm">
+          <div class="flex justify-between gap-4 px-4 py-3"><dt class="text-muted">Material</dt><dd class="font-semibold">{MATERIAL_NAMES[product.material]}</dd></div>
+          <div class="flex justify-between gap-4 px-4 py-3"><dt class="text-muted">Zona de gravare</dt><dd class="font-semibold">{product.engraveMm}</dd></div>
+          <div class="flex justify-between gap-4 px-4 py-3"><dt class="text-muted">Tehnică</dt><dd class="text-right font-semibold">{product.crystal ? 'gravură laser 3D în interior' : 'gravură laser pe sticlă'}</dd></div>
+          <div class="flex justify-between gap-4 px-4 py-3"><dt class="text-muted">Termen</dt><dd class="font-semibold">{product.leadDays}</dd></div>
+          <div class="px-4 py-3"><dt class="text-muted">Îngrijire</dt><dd class="mt-1 leading-relaxed">{product.care}</dd></div>
+        </dl>
+      </aside>
+    </div>
+
+    <section id="recenzii" class="mt-10 scroll-mt-4" aria-labelledby="recenzii-titlu">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <h2 id="recenzii-titlu" class="section-title">Recenzii <span class="font-semibold text-muted">({product.reviews})</span></h2>
+        <p class="text-sm"><span class="text-accent" aria-hidden="true">★★★★★</span> <b>{product.rating.toLocaleString('ro-RO')} din 5</b> · 98% recomandă produsul</p>
+      </div>
+      <ul class="mt-5 grid gap-4 md:grid-cols-2">
+        {reviews.map((r) => (
+          <li class="rounded-lg bg-white p-5">
+            <div class="flex items-center justify-between gap-3 text-sm">
+              <span class="text-accent" aria-label={`${r.stars} din 5 stele`}>{'★'.repeat(r.stars)}<span class="text-line">{'★'.repeat(5 - r.stars)}</span></span>
+              <span class="text-muted">{r.date}</span>
+            </div>
+            <p class="mt-2 leading-relaxed text-ink-2">{r.text}</p>
+            <p class="mt-3 text-sm"><b>{r.name}</b> <span class="text-muted">· {r.city} · comandă verificată</span></p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="section-title mb-5">Te-ar putea interesa</h2>
+      <div class="rail">
+        {related.map((p) => <ProductCard product={p} />)}
+      </div>
+    </section>
+  </div>
+</Layout>

@@ -1,0 +1,37 @@
+---
+import Icon from './Icon.astro';
+import { type Product, catalogImage, lei } from '../data/catalog';
+interface Props {
+  product: Product;
+  eager?: boolean;
+  /** social proof line under the price, e.g. "acum 11 minute, Cluj" */
+  note?: string;
+}
+const { product: p, eager = false, note } = Astro.props;
+const off = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+---
+
+<a href={`/produs/${p.slug}`} class="group block rounded-lg bg-white p-2.5 transition-shadow duration-200 hover:shadow-[0_6px_22px_rgba(0,0,0,.09)]">
+  <div class="relative aspect-square overflow-hidden rounded-md bg-photo">
+    <img src={catalogImage(p)} alt={p.name} width="600" height="600" loading={eager ? 'eager' : 'lazy'} class="absolute inset-0 size-full object-cover transition-opacity duration-200 group-hover:opacity-0" />
+    <img src={p.image} alt="" width="600" height="600" loading="lazy" class="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+    <span class="absolute right-2 top-2 grid size-8 place-items-center rounded-full bg-white/95 text-ink-2 shadow-sm" aria-hidden="true"><Icon name="heart" size={17} /></span>
+    {off > 0 && <span class="absolute right-0 top-12 rounded-l bg-accent px-2 py-0.5 text-[12px] font-bold text-white">-{off}%</span>}
+    {p.isNew && <span class="absolute left-2 top-2 rounded bg-teal px-2 py-0.5 text-[11px] font-extrabold uppercase text-white">Nou</span>}
+    <span class="absolute inset-x-2 bottom-2 translate-y-1 rounded bg-accent py-2 text-center text-[12px] font-extrabold uppercase text-white opacity-0 transition duration-200 ease-out group-hover:translate-y-0 group-hover:opacity-100">Personalizează</span>
+  </div>
+  <h3 class="mt-2.5 line-clamp-2 min-h-[2.5em] text-[13.5px] font-normal leading-snug text-ink">{p.name}</h3>
+  <p class="mt-1 flex items-baseline gap-2">
+    {p.oldPrice && <s class="text-[13px] text-ink-2">{lei(p.oldPrice)}</s>}
+    <span class:list={['text-[15px] font-bold', p.oldPrice ? 'text-accent' : 'text-ink']}>{lei(p.price)}</span>
+  </p>
+  <p class="mt-0.5 flex items-center gap-2 text-[12px] text-ink-2">
+    <span><span class="text-ink" aria-hidden="true">★★★★★</span> ({p.reviews})</span>
+    {p.colors && (
+      <span class="ml-auto flex items-center gap-1" aria-label={`${p.colors.length} culori`}>
+        {p.colors.map((c) => <span class="size-3 rounded-full ring-1 ring-black/15" style={`background:${c.hex}`} title={c.label}></span>)}
+      </span>
+    )}
+  </p>
+  {note && <p class="mt-0.5 text-[11.5px] text-muted">{note}</p>}
+</a>
