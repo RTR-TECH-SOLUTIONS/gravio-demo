@@ -14,7 +14,7 @@ const nav = [
   { href: '/produse?o=pentru-ea', label: 'Pentru ea', icon: 'she', tone: 'text-accent' },
   { href: '/produse?o=corporate', label: 'Corporate', icon: 'case', tone: 'text-ink-2' },
 ] as const;
-const featured = PRODUCTS[0];
+const featured = ['cristal-3d-portret', 'cristal-3d-baza-led', 'set-2-pahare-sampanie-miri', 'cana-sticla-gravata-cu-poza'].map((slug) => PRODUCTS.find((p) => p.slug === slug)!);
 ---
 
 <div class="bg-teal text-white">
@@ -59,32 +59,43 @@ const featured = PRODUCTS[0];
     <div class="lg:hidden"><CartButton client:media="(max-width: 1023px)" /></div>
   </div>
 
-  <div class="hidden border-t border-line lg:block">
+  <div class="relative hidden border-t border-line lg:block">
     <div class="wrap flex h-[52px] items-center gap-1">
       <nav class="flex items-center text-[13.5px] font-semibold text-ink" aria-label="Categorii">
-        <div class="group relative">
+        <div class="group">
           <a href="/produse" class="flex h-[52px] items-center gap-1.5 pr-3">
             <Icon name="gift" class="text-accent" />Toate produsele
           </a>
-          <div class="invisible absolute left-0 top-full z-40 w-[760px] translate-y-1 rounded-b-lg border border-line bg-white p-6 opacity-0 shadow-[0_12px_32px_rgba(0,0,0,.10)] transition duration-150 ease-out group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-            <div class="grid grid-cols-[1fr_1fr_220px] gap-8">
+          <!-- mega menu: full width band under the header, content aligned with the page -->
+          <div class="invisible absolute inset-x-0 top-full z-40 translate-y-1 border-t border-line bg-white opacity-0 shadow-[0_18px_32px_-12px_rgba(0,0,0,.14)] transition duration-150 ease-out group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+            <div class="wrap grid grid-cols-[180px_200px_1fr] gap-10 py-7">
               <div>
-                <p class="mb-2 text-sm font-bold text-muted">După produs</p>
-                <ul class="space-y-1.5">
+                <p class="mb-3 text-sm font-bold text-muted">După produs</p>
+                <ul class="space-y-2">
                   {Object.entries(CATEGORIES).map(([id, c]) => <li><a class="hover:text-accent" href={`/produse?cat=${id}`}>{c.name}</a></li>)}
                 </ul>
+                <a href="/produse" class="btn btn-accent btn-sm mt-6">Toate produsele</a>
               </div>
               <div>
-                <p class="mb-2 text-sm font-bold text-muted">După ocazie</p>
-                <ul class="space-y-1.5">
+                <p class="mb-3 text-sm font-bold text-muted">După ocazie</p>
+                <ul class="space-y-2">
                   {Object.entries(OCCASIONS).map(([id, o]) => <li><a class="hover:text-accent" href={`/produse?o=${id}`}>{o}</a></li>)}
                 </ul>
               </div>
-              <a href={`/produs/${featured.slug}`} class="block rounded-md bg-surface p-3 hover:bg-[#eceeef]">
-                <img src={catalogImage(featured)} alt="" width="200" height="200" class="aspect-square w-full rounded bg-photo object-cover" loading="lazy" />
-                <p class="mt-2 text-sm font-bold leading-snug">{featured.name}</p>
-                <p class="text-sm text-accent">de la {featured.price} lei</p>
-              </a>
+              <div>
+                <p class="mb-3 text-sm font-bold text-muted">Cele mai iubite</p>
+                <ul class="grid grid-cols-4 gap-4">
+                  {featured.map((f) => (
+                    <li>
+                      <a href={`/produs/${f.slug}`} class="group/card block">
+                        <img src={catalogImage(f)} alt="" width="200" height="200" class="aspect-square w-full rounded-md bg-photo object-cover transition duration-200 group-hover/card:brightness-110" loading="lazy" />
+                        <p class="mt-2 line-clamp-2 text-[13px] font-semibold leading-snug group-hover/card:text-accent">{f.name}</p>
+                        <p class="text-[13px] text-accent">{f.price} lei</p>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -100,7 +111,7 @@ const featured = PRODUCTS[0];
           <form action="/produse" method="get" role="search" class="absolute right-0 top-full z-40 mt-1 w-[380px] rounded-lg border border-line bg-white p-3 shadow-[0_12px_32px_rgba(0,0,0,.10)]">
             <label class="flex h-11 items-center rounded-md border border-[#d6d9dc] pl-3 focus-within:border-teal-dark">
               <span class="sr-only">Caută</span>
-              <input name="q" type="search" placeholder="Caută: cană, tocător, brichetă..." class="w-full bg-transparent text-[0.95rem] text-ink outline-none placeholder:text-muted" />
+              <input name="q" type="search" placeholder="Caută: cristal, pahar de șampanie, halbă..." class="w-full bg-transparent text-[0.95rem] text-ink outline-none placeholder:text-muted" />
               <button class="grid size-11 shrink-0 place-items-center text-ink" aria-label="Caută"><Icon name="search" size={18} /></button>
             </label>
           </form>
